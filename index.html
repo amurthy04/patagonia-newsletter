@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patagonia — New Hire Newsletter</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #111111;
+    --charcoal: #2a2a2a;
+    --stone: #6b6b6b;
+    --warm-gray: #a8a29e;
+    --sand: #f5f0eb;
+    --cream: #faf8f5;
+    --white: #ffffff;
+    --forest: #1a3a2a;
+    --pine: #2d5a3f;
+    --sage: #7c9a82;
+    --terracotta: #c75b39;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── SCROLL PROGRESS BAR ── */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--forest);
+    z-index: 1000;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  /* ── STICKY NAV ── */
+  .sticky-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: rgba(17,17,17,0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transform: translateY(-100%);
+    transition: transform 0.35s ease;
+    padding: 0 clamp(16px, 4vw, 48px);
+  }
+  .sticky-nav.visible { transform: translateY(0); }
+  .sticky-nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+  }
+  .sticky-nav .logo {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  .sticky-nav .nav-links { display: flex; gap: 20px; }
+  .sticky-nav .nav-links a {
+    color: var(--warm-gray);
+    text-decoration: none;
+    font-size: 0.68rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .sticky-nav .nav-links a:hover { color: var(--white); }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--black);
+    color: var(--white);
+    text-align: center;
+    padding: 10px 24px;
+    font-size: 0.68rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .topbar a { color: var(--warm-gray); text-decoration: none; margin: 0 14px; transition: color 0.2s; }
+  .topbar a:hover { color: var(--white); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    height: 94vh;
+    min-height: 600px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    background: linear-gradient(160deg, #0d1b12 0%, #1a3a2a 30%, #2d5a3f 60%, #1a2e3a 100%);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 40%, rgba(124,154,130,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 50% at 20% 80%, rgba(196,125,44,0.08) 0%, transparent 60%);
+    animation: auroraShift 15s ease-in-out infinite alternate;
+  }
+  @keyframes auroraShift {
+    0% { opacity: 0.6; transform: scale(1) translate(0,0); }
+    100% { opacity: 1; transform: scale(1.1) translate(-2%, 1%); }
+  }
+  /* Mountain silhouettes */
+  .hero-mountains {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45%;
+    overflow: hidden;
+  }
+  .hero-mountains svg { position: absolute; bottom: 0; width: 100%; }
+  /* Stars */
+  .hero-stars {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.2; }
+    100% { opacity: 0.8; }
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 clamp(32px, 6vw, 80px) clamp(48px, 8vh, 100px);
+    max-width: 700px;
+  }
+  .hero-content .overline {
+    font-size: 0.63rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+    margin-bottom: 16px;
+    opacity: 0; animation: slideUp 0.8s ease 0.3s forwards;
+  }
+  .hero-content h1 {
+    font-weight: 700;
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 20px;
+    opacity: 0; animation: slideUp 0.8s ease 0.5s forwards;
+  }
+  .hero-content p {
+    font-family: 'Lora', serif;
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    line-height: 1.65;
+    color: rgba(255,255,255,0.75);
+    font-style: italic;
+    max-width: 480px;
+    opacity: 0; animation: slideUp 0.8s ease 0.7s forwards;
+  }
+  .hero-scroll-cue {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: bounce 2s ease-in-out infinite;
+    cursor: pointer;
+  }
+  .hero-scroll-cue span {
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+  .hero-scroll-cue .arrow {
+    width: 20px;
+    height: 20px;
+    border-right: 1.5px solid rgba(255,255,255,0.4);
+    border-bottom: 1.5px solid rgba(255,255,255,0.4);
+    transform: rotate(45deg);
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── CONTACT STRIP ── */
+  .contact-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  @media (max-width: 600px) { .contact-strip { grid-template-columns: 1fr 1fr; } }
+  .contact-item {
+    padding: 28px clamp(16px, 3vw, 32px);
+    border-right: 1px solid rgba(0,0,0,0.06);
+    transition: background 0.3s;
+  }
+  .contact-item:last-child { border-right: none; }
+  .contact-item:hover { background: var(--sand); }
+  .contact-item .label {
+    font-size: 0.55rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--stone);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .contact-item .value {
+    font-family: 'Lora', serif;
+    font-size: 0.88rem;
+    color: var(--black);
+    line-height: 1.5;
+  }
+  .contact-item .value a {
+    color: var(--forest);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(45,90,63,0.3);
+    transition: text-decoration-color 0.2s;
+  }
+  .contact-item .value a:hover { text-decoration-color: var(--forest); }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--sand);
+  }
+  @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+  .stat-item {
+    padding: 44px 24px;
+    text-align: center;
+    border-right: 1px solid rgba(0,0,0,0.06);
+    transition: background 0.3s;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item:hover { background: rgba(0,0,0,0.02); }
+  .stat-item .number {
+    font-weight: 700;
+    font-size: 2.4rem;
+    color: var(--forest);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-item .label {
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--stone);
+    font-weight: 500;
+  }
+
+  /* ── EDITORIAL ── */
+  .editorial {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 72px clamp(24px, 5vw, 48px);
+  }
+  .editorial .overline {
+    font-size: 0.58rem;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--stone);
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .editorial h2 {
+    font-weight: 600;
+    font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+    line-height: 1.15;
+    color: var(--black);
+    margin-bottom: 24px;
+  }
+  .editorial p {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--charcoal);
+    margin-bottom: 18px;
+  }
+  .editorial p strong { font-family: 'Sora', sans-serif; font-weight: 600; font-size: 0.91rem; }
+  .editorial a {
+    color: var(--forest);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(45,90,63,0.3);
+    transition: text-decoration-color 0.2s;
+  }
+  .editorial a:hover { text-decoration-color: var(--forest); }
+
+  /* ── DIVIDER ── */
+  .divider { width: 48px; height: 2px; background: var(--sage); margin: 28px 0; }
+
+  /* ── LANDSCAPE BAND ── */
+  .landscape-band {
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  .landscape-band svg { width: 100%; height: 100%; }
+  .landscape-band .caption {
+    position: absolute;
+    bottom: 14px;
+    right: 18px;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+  }
+
+  /* ── QUOTE ── */
+  .quote-block {
+    background: var(--sand);
+    padding: 64px clamp(24px, 5vw, 48px);
+    text-align: center;
+  }
+  .quote-block blockquote {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 2.8vw, 2rem);
+    line-height: 1.5;
+    color: var(--forest);
+    max-width: 640px;
+    margin: 0 auto 14px;
+  }
+  .quote-block cite {
+    font-family: 'Sora', sans-serif;
+    font-style: normal;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+
+  /* ── DARK SECTION ── */
+  .dark-section {
+    background: var(--forest);
+    color: var(--white);
+    padding: 72px clamp(24px, 5vw, 48px);
+  }
+  .dark-section .inner { max-width: 720px; margin: 0 auto; }
+  .dark-section .overline { font-size: 0.58rem; letter-spacing: 3.5px; text-transform: uppercase; color: var(--sage); font-weight: 600; margin-bottom: 18px; }
+  .dark-section h2 { font-weight: 600; font-size: clamp(1.7rem, 3.5vw, 2.5rem); line-height: 1.15; color: var(--white); margin-bottom: 24px; }
+  .dark-section p { font-family: 'Lora', serif; font-size: 1rem; line-height: 1.85; color: rgba(255,255,255,0.8); margin-bottom: 18px; }
+  .dark-section a { color: var(--sage); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+  .dark-section a:hover { color: white; }
+  .dark-section .divider { background: rgba(255,255,255,0.2); }
+
+  /* ── EDITORIAL LIST ── */
+  .editorial-list { list-style: none; padding: 0; margin: 24px 0; }
+  .editorial-list li {
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+  }
+  .editorial-list li:last-child { border-bottom: none; }
+  .editorial-list .num { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.72rem; color: var(--sage); min-width: 20px; }
+  .editorial-list .li-title { font-family: 'Sora', sans-serif; font-weight: 600; font-size: 0.86rem; color: var(--black); }
+
+  /* ── SPLIT SECTION ── */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 520px;
+  }
+  @media (max-width: 768px) {
+    .split { grid-template-columns: 1fr; }
+    .split-visual { min-height: 260px; }
+  }
+  .split-visual {
+    position: relative;
+    overflow: hidden;
+  }
+  .split-visual svg { width: 100%; height: 100%; display: block; }
+  .split-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(36px, 5vw, 72px);
+  }
+  .split-text .overline { font-size: 0.58rem; letter-spacing: 3.5px; text-transform: uppercase; color: var(--stone); font-weight: 600; margin-bottom: 14px; }
+  .split-text h2 { font-weight: 600; font-size: clamp(1.4rem, 2.5vw, 1.9rem); line-height: 1.2; color: var(--black); margin-bottom: 18px; }
+  .split-text p { font-family: 'Lora', serif; font-size: 0.93rem; line-height: 1.8; color: var(--charcoal); margin-bottom: 12px; }
+  .split-text p strong { font-family: 'Sora', sans-serif; font-weight: 600; font-size: 0.88rem; }
+
+  /* ── BENEFITS GRID ── */
+  .benefits-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(0,0,0,0.06);
+  }
+  @media (max-width: 600px) { .benefits-row { grid-template-columns: 1fr; } }
+  .benefit-cell {
+    background: var(--white);
+    padding: 26px 22px;
+    transition: background 0.3s, transform 0.3s;
+    cursor: default;
+  }
+  .benefit-cell:hover { background: var(--sand); transform: translateY(-2px); }
+  .benefit-cell h4 { font-weight: 600; font-size: 0.8rem; color: var(--black); margin-bottom: 5px; }
+  .benefit-cell p { font-family: 'Lora', serif; font-size: 0.83rem; line-height: 1.6; color: var(--stone); margin: 0; }
+
+  /* ── COLLAPSIBLE SECTIONS ── */
+  .collapsible {
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px clamp(24px, 5vw, 48px);
+    cursor: pointer;
+    transition: background 0.2s;
+    user-select: none;
+  }
+  .collapsible-header:hover { background: var(--sand); }
+  .collapsible-header h3 {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--black);
+  }
+  .collapsible-arrow {
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid var(--stone);
+    border-bottom: 2px solid var(--stone);
+    transform: rotate(45deg);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .collapsible.open .collapsible-arrow { transform: rotate(-135deg); }
+  .collapsible-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    padding: 0 clamp(24px, 5vw, 48px);
+  }
+  .collapsible.open .collapsible-body { max-height: 500px; }
+  .collapsible-body-inner { padding-bottom: 24px; }
+  .collapsible-body p {
+    font-family: 'Lora', serif;
+    font-size: 0.93rem;
+    line-height: 1.8;
+    color: var(--charcoal);
+    margin-bottom: 10px;
+  }
+
+  /* ── NOTICE ── */
+  .notice {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px clamp(24px, 5vw, 48px);
+    border-left: 3px solid var(--terracotta);
+    background: rgba(199,91,57,0.04);
+  }
+  .notice h3 { font-weight: 600; font-size: 0.92rem; color: var(--terracotta); margin-bottom: 8px; }
+  .notice p { font-family: 'Lora', serif; font-size: 0.93rem; line-height: 1.8; color: var(--charcoal); margin: 0; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--black);
+    color: var(--warm-gray);
+    padding: 56px clamp(24px, 5vw, 48px);
+  }
+  .footer-inner { max-width: 720px; margin: 0 auto; text-align: center; }
+  .footer-logo { font-weight: 700; font-size: 0.95rem; letter-spacing: 4px; text-transform: uppercase; color: var(--white); margin-bottom: 20px; }
+  .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 28px; }
+  .footer-links a { color: var(--warm-gray); text-decoration: none; font-size: 0.75rem; letter-spacing: 1px; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-fine { font-size: 0.65rem; line-height: 1.8; color: var(--stone); }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) { .hero { height: 80vh; min-height: 500px; } }
+  @media (max-width: 480px) { .sticky-nav .nav-links { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ═══ STICKY NAV ═══ -->
+<nav class="sticky-nav" id="stickyNav">
+  <div class="sticky-nav-inner">
+    <div class="logo">Patagonia</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#purpose">Purpose</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#growth">Growth</a>
+      <a href="#compensation">Compensation</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ TOP BAR ═══ -->
+<div class="topbar">
+  <a href="https://www.patagonia.com/actionworks/" target="_blank">Activism</a>
+  <a href="https://www.patagonia.com/stories/" target="_blank">Stories</a>
+  <a href="https://wornwear.patagonia.com/" target="_blank">Worn Wear</a>
+  &nbsp;&nbsp;·&nbsp;&nbsp; New Hire Welcome Newsletter &nbsp;·&nbsp; 2026
+</div>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero" id="hero">
+  <div class="hero-stars" id="heroStars"></div>
+  <div class="hero-mountains">
+    <svg viewBox="0 0 1440 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,400 L0,280 L120,200 L240,260 L360,160 L480,220 L600,120 L720,180 L840,80 L960,160 L1080,100 L1200,180 L1320,140 L1440,200 L1440,400Z" fill="rgba(13,27,18,0.5)"/>
+      <path d="M0,400 L0,320 L160,240 L320,300 L480,200 L640,280 L800,180 L960,250 L1120,200 L1280,260 L1440,220 L1440,400Z" fill="rgba(13,27,18,0.75)"/>
+      <path d="M0,400 L0,350 L200,300 L400,340 L600,280 L800,330 L1000,300 L1200,340 L1440,310 L1440,400Z" fill="#0d1b12"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div class="overline">Human Resources &nbsp;/ &nbsp;New Hire Guide</div>
+    <h1>Welcome to<br>Patagonia.</h1>
+    <p>"We're in business to save our home planet." Here's everything you need to know as you start your journey with us.</p>
+  </div>
+  <div class="hero-scroll-cue" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+    <span>Scroll</span>
+    <div class="arrow"></div>
+  </div>
+</div>
+
+<!-- ═══ CONTACT ═══ -->
+<div class="contact-strip" id="contact">
+  <div class="contact-item">
+    <div class="label">Headquarters</div>
+    <div class="value">259 W. Santa Clara St.<br>Ventura, CA 93001</div>
+  </div>
+  <div class="contact-item">
+    <div class="label">Phone</div>
+    <div class="value">(805) 643-8616</div>
+  </div>
+  <div class="contact-item">
+    <div class="label">Email</div>
+    <div class="value"><a href="mailto:customer_service@patagonia.com">customer_service<br>@patagonia.com</a></div>
+  </div>
+  <div class="contact-item">
+    <div class="label">Careers</div>
+    <div class="value"><a href="https://careers.patagonia.com" target="_blank">careers.patagonia.com</a></div>
+  </div>
+</div>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats-row">
+  <div class="stat-item reveal"><div class="number" data-count="1973">0</div><div class="label">Founded</div></div>
+  <div class="stat-item reveal"><div class="number" data-prefix="$" data-suffix="B" data-count="1.1">0</div><div class="label">Annual Revenue</div></div>
+  <div class="stat-item reveal"><div class="number" data-suffix="+" data-count="3000">0</div><div class="label">Employees</div></div>
+  <div class="stat-item reveal"><div class="number" data-suffix="%" data-count="4">0</div><div class="label">Annual Turnover</div></div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<div class="editorial reveal" id="about">
+  <div class="overline">Who We Are</div>
+  <h2>A company born from climbing.</h2>
+  <div class="divider"></div>
+  <p>Founded in 1973 by rock climber <strong>Yvon Chouinard</strong>, Patagonia designs and sells high-performance outdoor apparel, gear, and food. Our product lines span alpine climbing, skiing, snowboarding, surfing, fly fishing, mountain biking, and trail running — what we call the silent sports.</p>
+  <p>We are headquartered in <strong>Ventura, California</strong> and operate <strong>worldwide</strong> with retail stores across North America, Europe, South America, Asia, and Australia. Our Reno, Nevada distribution center supports all wholesale and direct-to-consumer operations.</p>
+  <p>In 2022, Chouinard transferred company ownership — valued at approximately $3 billion — to the <strong>Patagonia Purpose Trust</strong> and <strong>Holdfast Collective</strong>, a nonprofit. Every dollar not reinvested in the business now goes directly to fighting the environmental crisis.</p>
+</div>
+
+<!-- ═══ LANDSCAPE BAND ═══ -->
+<div class="landscape-band">
+  <svg viewBox="0 0 1440 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a2e3a"/><stop offset="50%" stop-color="#2d4a5a"/><stop offset="100%" stop-color="#c47d2c"/></linearGradient>
+    </defs>
+    <rect width="1440" height="280" fill="url(#sky1)"/>
+    <circle cx="1100" cy="70" r="40" fill="#e8c87a" opacity="0.9"/>
+    <circle cx="1100" cy="70" r="35" fill="#f0d68a" opacity="0.4"/>
+    <path d="M0,280 L0,200 L100,160 L200,190 L350,120 L500,170 L650,90 L800,150 L950,80 L1100,130 L1250,100 L1440,150 L1440,280Z" fill="#1a3a2a" opacity="0.6"/>
+    <path d="M0,280 L0,220 L150,190 L300,210 L500,160 L700,200 L900,150 L1100,190 L1300,170 L1440,200 L1440,280Z" fill="#0d1b12" opacity="0.85"/>
+    <path d="M0,280 L0,250 L200,235 L400,245 L700,225 L1000,240 L1440,230 L1440,280Z" fill="#0d1b12"/>
+  </svg>
+  <span class="caption">Protecting places like this is why we exist.</span>
+</div>
+
+<!-- ═══ MISSION QUOTE ═══ -->
+<div class="quote-block reveal" id="purpose">
+  <blockquote>"We're in business to save our home planet."</blockquote>
+  <cite>Patagonia Mission Statement</cite>
+</div>
+
+<!-- ═══ DARK: MISSION/VISION/VALUES ═══ -->
+<div class="dark-section">
+  <div class="inner reveal">
+    <div class="overline">Our Purpose</div>
+    <h2>Mission, Vision & Core Values</h2>
+    <div class="divider"></div>
+    <p><strong style="font-family:'Sora',sans-serif;color:white;">Vision:</strong> Use all our resources — business, investments, voice, and imagination — to protect all life on Earth.</p>
+    <p>Our core values, updated on our 50th anniversary in 2022:</p>
+    <ul class="editorial-list" style="margin-top:20px;">
+      <li style="border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);"><span class="num">01</span><span><span class="li-title" style="color:#fff">Build the Best Product</span><br>Useful, versatile, long-lasting, repairable, and recyclable.</span></li>
+      <li style="border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);"><span class="num">02</span><span><span class="li-title" style="color:#fff">Examine Our Practices Openly</span><br>We walk the talk. Our actions match our words.</span></li>
+      <li style="border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);"><span class="num">03</span><span><span class="li-title" style="color:#fff">Protect Our Home Planet</span><br>Every decision considers the environmental crisis.</span></li>
+      <li style="border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);"><span class="num">04</span><span><span class="li-title" style="color:#fff">Be Just, Equitable & Antiracist</span><br>All backgrounds have the power to contribute and lead.</span></li>
+      <li style="border-bottom:none;color:rgba(255,255,255,0.65);"><span class="num">05</span><span><span class="li-title" style="color:#fff">Do It Our Way</span><br>Our success lies in developing new ways to do things.</span></li>
+    </ul>
+    <p style="margin-top:14px;">Learn more: <a href="https://www.patagonia.com/core-values/" target="_blank">Core Values</a> · <a href="https://www.patagonia.com/one-percent-for-the-planet.html" target="_blank">1% for the Planet</a> · <a href="https://www.patagonia.com/ironclad-guarantee.html" target="_blank">Ironclad Guarantee</a></p>
+  </div>
+</div>
+
+<!-- ═══ SPLIT: WORK HOURS ═══ -->
+<div class="split" id="schedule">
+  <div class="split-visual">
+    <svg viewBox="0 0 720 520" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="ocean" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a3a4a"/><stop offset="100%" stop-color="#2d6a7a"/></linearGradient></defs>
+      <rect width="720" height="520" fill="url(#ocean)"/>
+      <circle cx="580" cy="120" r="50" fill="#f0d68a" opacity="0.8"/>
+      <path d="M0,520 L0,380 Q180,320 360,380 T720,350 L720,520Z" fill="#1a4a5a" opacity="0.5"/>
+      <path d="M0,520 L0,420 Q180,380 360,420 T720,400 L720,520Z" fill="#0d2a3a" opacity="0.7"/>
+      <path d="M0,520 L0,460 Q180,440 360,460 T720,450 L720,520Z" fill="#0a1a2a"/>
+      <text x="360" y="280" text-anchor="middle" font-family="Sora,sans-serif" font-size="14" font-weight="600" letter-spacing="3" fill="rgba(255,255,255,0.3)" text-transform="uppercase">LET MY PEOPLE GO SURFING</text>
+    </svg>
+  </div>
+  <div class="split-text reveal">
+    <div class="overline">Your Schedule</div>
+    <h2>Work Hours & Flexibility</h2>
+    <p>We operate on a <strong>9/80 work schedule</strong>: nine hours Monday through Thursday, eight hours on alternating Fridays. That's a three-day weekend every other week — 26 long weekends a year.</p>
+    <p>Corporate hours are generally <strong>8:00 AM – 5:00 PM</strong>. Retail varies by store and season. Distribution offers 15+ scheduling options with schedules guaranteed three weeks in advance.</p>
+    <p>Our famous <strong>"Let My People Go Surfing"</strong> flex-time policy: when conditions are right, head out — as long as the work gets done. This isn't a gimmick. It's how we've always operated.</p>
+  </div>
+</div>
+
+<!-- ═══ SPLIT: DEVELOPMENT ═══ -->
+<div class="split" id="growth">
+  <div class="split-text reveal">
+    <div class="overline">Growth & Learning</div>
+    <h2>Employee Development</h2>
+    <p>We embrace lifelong learning. From your first week, you'll set annual goals and access our full development suite.</p>
+    <ul class="editorial-list">
+      <li><span class="num">01</span><span><span class="li-title">Summit Learning Platform</span><br>In-person and on-demand training in Purpose, Career, Leadership, Equity & Inclusion, Activism, and Product.</span></li>
+      <li><span class="num">02</span><span><span class="li-title">Employee Development Positions</span><br>Rotational roles to stretch into different areas of the business.</span></li>
+      <li><span class="num">03</span><span><span class="li-title">Environmental Internships</span><br>Up to two months paid, plus travel, to volunteer at environmental nonprofits.</span></li>
+      <li style="border-bottom:none;"><span class="num">04</span><span><span class="li-title">Mentorship Programs</span><br>Pair with experienced colleagues for career guidance.</span></li>
+    </ul>
+    <p><strong>Skills to maintain:</strong> product knowledge, environmental literacy, customer engagement, sustainability practices, inclusive leadership.</p>
+  </div>
+  <div class="split-visual">
+    <svg viewBox="0 0 720 520" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="trail" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2d5a3f"/><stop offset="100%" stop-color="#1a3a2a"/></linearGradient></defs>
+      <rect width="720" height="520" fill="url(#trail)"/>
+      <path d="M0,520 L0,350 L80,300 L160,340 L280,250 L400,310 L520,220 L640,280 L720,240 L720,520Z" fill="rgba(13,27,18,0.4)"/>
+      <path d="M0,520 L0,400 L120,360 L240,390 L380,320 L520,370 L660,330 L720,350 L720,520Z" fill="rgba(13,27,18,0.65)"/>
+      <path d="M0,520 L0,450 L180,430 L360,450 L540,435 L720,445 L720,520Z" fill="#0d1b12"/>
+      <path d="M200,460 Q360,410 520,460" stroke="rgba(196,125,44,0.3)" stroke-width="2" fill="none" stroke-dasharray="8,6"/>
+      <text x="360" y="280" text-anchor="middle" font-family="Sora,sans-serif" font-size="14" font-weight="600" letter-spacing="3" fill="rgba(255,255,255,0.25)">LIFELONG LEARNING</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══ PERFORMANCE ═══ -->
+<div class="editorial reveal">
+  <div class="overline">Feedback & Recognition</div>
+  <h2>Performance Appraisals</h2>
+  <div class="divider"></div>
+  <p>Performance is evaluated through <strong>annual goal setting</strong> and ongoing feedback. Reviews consider your impact, alignment with company values, collaboration, and growth.</p>
+  <p>All U.S. regular employees are <strong>bonus-eligible</strong>, with hourly employees starting at a <strong>5% bonus</strong>. After six months, hourly retail, CX, and distribution employees receive a <strong>$0.50/hour progression raise</strong>.</p>
+  <p>Feedback here is a <strong>continuous, two-way conversation</strong> — we listen as much as we evaluate.</p>
+</div>
+
+<!-- ═══ LANDSCAPE BAND 2 ═══ -->
+<div class="landscape-band">
+  <svg viewBox="0 0 1440 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="dawn" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a1a3a"/><stop offset="40%" stop-color="#3a2a4a"/><stop offset="80%" stop-color="#c47d2c"/><stop offset="100%" stop-color="#e8a050"/></linearGradient></defs>
+    <rect width="1440" height="280" fill="url(#dawn)"/>
+    <path d="M0,280 L0,140 L180,100 L360,150 L540,60 L720,120 L900,50 L1080,110 L1260,80 L1440,130 L1440,280Z" fill="rgba(26,26,46,0.5)"/>
+    <path d="M0,280 L0,200 L240,170 L480,200 L720,160 L960,190 L1200,170 L1440,195 L1440,280Z" fill="rgba(17,17,30,0.8)"/>
+    <path d="M0,280 L0,250 L360,240 L720,250 L1080,240 L1440,248 L1440,280Z" fill="#111111"/>
+  </svg>
+</div>
+
+<!-- ═══ COMPENSATION ═══ -->
+<div class="editorial reveal" id="compensation">
+  <div class="overline">Your Compensation</div>
+  <h2>Compensation, Benefits & Incentives</h2>
+  <div class="divider"></div>
+  <p>We strive to pay competitive, equitable wages. U.S. hourly employees average <strong>$28.55/hour</strong>, and our retail team earns roughly <strong>50% more</strong> than the average U.S. retail employee. From day one, an entry-level employee has the <strong>same benefits as our CEO</strong>.</p>
+</div>
+
+<div class="benefits-row reveal">
+  <div class="benefit-cell"><h4>100% Medical</h4><p>Full and part-time. Premiums completely covered from day one.</p></div>
+  <div class="benefit-cell"><h4>Dental & Vision</h4><p>Comprehensive plans for all employees.</p></div>
+  <div class="benefit-cell"><h4>Mental Health</h4><p>Dedicated support and resources for holistic wellness.</p></div>
+  <div class="benefit-cell"><h4>401(k)</h4><p>Up to 3% company contribution — even if you don't contribute.</p></div>
+  <div class="benefit-cell"><h4>Annual Bonuses</h4><p>All regular employees eligible. 5% minimum for hourly.</p></div>
+  <div class="benefit-cell"><h4>Progression Raises</h4><p>$0.50/hr raise after 6 months for hourly employees.</p></div>
+  <div class="benefit-cell"><h4>On-Site Childcare</h4><p>Since 1983. Ventura HQ & Reno. Ages 8 weeks to kindergarten.</p></div>
+  <div class="benefit-cell"><h4>Parental Leave</h4><p>12 weeks fully paid. $10K adoption assistance.</p></div>
+  <div class="benefit-cell"><h4>Employee Discount</h4><p>Generous Patagonia discount plus industry pro deals.</p></div>
+  <div class="benefit-cell"><h4>Paid Activism</h4><p>18 hours/year. Plus bail for peaceful protest.</p></div>
+  <div class="benefit-cell"><h4>Environmental Internship</h4><p>Two months paid at an environmental nonprofit.</p></div>
+  <div class="benefit-cell"><h4>On-Site Perks</h4><p>Organic café, yoga, fitness, and flexible scheduling.</p></div>
+</div>
+
+<div class="editorial reveal" style="padding-bottom:0;">
+  <p><strong>Promotions:</strong> Internal mobility through EDPs, mentorship, and cross-department transfers. We promote from within whenever possible.</p>
+  <p>Full details: <a href="https://careers.patagonia.com/us/en/benefits" target="_blank">careers.patagonia.com/benefits</a></p>
+</div>
+
+<!-- ═══ SEPARATION ═══ -->
+<div style="padding: 32px 0;">
+  <div class="notice reveal">
+    <h3>Voluntary Separation</h3>
+    <p>Should you decide to move on, we respectfully ask that you provide <strong>at least two (2) weeks' written notice</strong> to your direct manager. This ensures a smooth transition for your team. We value the relationships built here and want your departure to be as positive as your time with us.</p>
+  </div>
+</div>
+
+<!-- ═══ COLLAPSIBLE: GOOD TO KNOW ═══ -->
+<div style="padding: 32px 0 0; background: var(--sand);">
+  <div style="max-width:720px; margin:0 auto; padding: 0 clamp(24px,5vw,48px) 16px;">
+    <div class="overline" style="font-size:0.58rem; letter-spacing:3.5px; text-transform:uppercase; color:var(--stone); font-weight:600; margin-bottom:8px;">Good to Know</div>
+    <h2 style="font-weight:600; font-size:clamp(1.7rem,3.5vw,2.2rem); color:var(--black); margin-bottom:8px;">A few more things.</h2>
+    <p style="font-family:'Lora',serif; font-size:0.93rem; color:var(--stone); margin-bottom:0;">Click any topic below to expand.</p>
+  </div>
+  <div class="collapsible open" onclick="this.classList.toggle('open')">
+    <div class="collapsible-header"><h3>Culture Fit Matters</h3><div class="collapsible-arrow"></div></div>
+    <div class="collapsible-body"><div class="collapsible-body-inner"><p>When we read resumes, we start from the bottom. Your hobbies and passions tell us who you are. We want people who live the outdoor life. It's not unusual for positions to stay open for a year — we wait for the exact right person.</p></div></div>
+  </div>
+  <div class="collapsible" onclick="this.classList.toggle('open')">
+    <div class="collapsible-header"><h3>Sustainability Is Everyone's Job</h3><div class="collapsible-arrow"></div></div>
+    <div class="collapsible-body"><div class="collapsible-body-inner"><p>100% of our U.S. facilities run on renewable energy. 69% of raw materials come from recycled sources, and we're working to eliminate virgin petroleum-based materials entirely. Through our <a href="https://wornwear.patagonia.com/" target="_blank">Worn Wear</a> program, we encourage customers to repair and reuse gear.</p></div></div>
+  </div>
+  <div class="collapsible" onclick="this.classList.toggle('open')">
+    <div class="collapsible-header"><h3>Key Locations</h3><div class="collapsible-arrow"></div></div>
+    <div class="collapsible-body"><div class="collapsible-body-inner"><p><strong>Ventura, CA</strong> — Headquarters (~700 employees). Product design, marketing, HR, finance, and more.<br><strong>Reno, NV</strong> — Distribution center (~850 team members). Shipping, repairs, CX leadership.<br><strong>70+ retail stores</strong> worldwide across 6 continents.</p></div></div>
+  </div>
+  <div class="collapsible" onclick="this.classList.toggle('open')">
+    <div class="collapsible-header"><h3>Ironclad Guarantee</h3><div class="collapsible-arrow"></div></div>
+    <div class="collapsible-body"><div class="collapsible-body-inner"><p>We guarantee everything we make. If a product doesn't perform as intended, we'll <a href="https://www.patagonia.com/ironclad-guarantee.html" target="_blank">repair, replace, or refund it</a>. Encourage every customer to trust this — it's real, and it's been our promise from day one.</p></div></div>
+  </div>
+  <div style="height: 32px;"></div>
+</div>
+
+<!-- ═══ CLOSING ═══ -->
+<div class="quote-block reveal">
+  <blockquote>"There's no business if there's no planet."</blockquote>
+  <cite>Dean Carter, Former CHRO</cite>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">Patagonia</div>
+    <div class="footer-links">
+      <a href="https://www.patagonia.com" target="_blank">patagonia.com</a>
+      <a href="https://careers.patagonia.com" target="_blank">Careers</a>
+      <a href="https://careers.patagonia.com/us/en/benefits" target="_blank">Benefits</a>
+      <a href="https://www.patagonia.com/core-values/" target="_blank">Core Values</a>
+      <a href="https://wornwear.patagonia.com" target="_blank">Worn Wear</a>
+      <a href="https://www.patagonia.com/actionworks/" target="_blank">Action Works</a>
+    </div>
+    <p class="footer-fine">
+      Patagonia, Inc. · 259 W. Santa Clara St., Ventura, CA 93001 · (805) 643-8616<br>
+      Prepared by Patagonia Human Resources for new hire candidates.<br>
+      © 2026 Patagonia, Inc. All rights reserved.
+    </p>
+  </div>
+</div>
+
+<script>
+// ── Stars in hero ──
+(function() {
+  const container = document.getElementById('heroStars');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 55 + '%';
+    star.style.width = (Math.random() * 2 + 1) + 'px';
+    star.style.height = star.style.width;
+    star.style.animationDelay = (Math.random() * 3) + 's';
+    star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    container.appendChild(star);
+  }
+})();
+
+// ── Scroll progress bar ──
+window.addEventListener('scroll', function() {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('scrollProgress').style.width = pct + '%';
+});
+
+// ── Sticky nav show/hide ──
+let lastScroll = 0;
+const stickyNav = document.getElementById('stickyNav');
+const heroEl = document.getElementById('hero');
+window.addEventListener('scroll', function() {
+  const current = window.scrollY;
+  const heroBottom = heroEl.offsetHeight;
+  if (current > heroBottom && current > lastScroll) {
+    stickyNav.classList.add('visible');
+  } else if (current > heroBottom) {
+    stickyNav.classList.add('visible');
+  } else {
+    stickyNav.classList.remove('visible');
+  }
+  if (current < heroBottom) stickyNav.classList.remove('visible');
+  lastScroll = current;
+});
+
+// ── Scroll reveal ──
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ── Animated counters ──
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    if (el.dataset.counted) return;
+    el.dataset.counted = 'true';
+    const target = parseFloat(el.dataset.count);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const isDecimal = String(target).includes('.');
+    const isYear = target === 1973;
+    const duration = 1200;
+    const start = performance.now();
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      let current = eased * target;
+      if (isYear) {
+        current = Math.round(current);
+      } else if (isDecimal) {
+        current = current.toFixed(1);
+      } else {
+        current = Math.round(current).toLocaleString();
+      }
+      el.textContent = prefix + current + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+</script>
+
+</body>
+</html>
